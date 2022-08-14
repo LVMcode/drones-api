@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from .medication_model import Medication
 
 
-class Models(str, Enum):
+class Model(str, Enum):
     Lightweight = "Lightweight"
     Middleweight = "Middleweight"
     Cruiserweight = "Cruiserweight"
@@ -25,7 +25,7 @@ class State(str, Enum):
 class Drone(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     serial_number: str
-    model: Models
+    model: Model
     weight_limit: float = 500
     battery_capacity: int
     state: State

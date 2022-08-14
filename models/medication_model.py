@@ -10,7 +10,7 @@ class Medication(SQLModel, table=True):
     name: str
     weight: float
     code: str
-    image: str
+    image: str | None
 
     drone_id: int = Field(foreign_key="drone.id")
     drone: "Drone" = Relationship(back_populates="medications")
