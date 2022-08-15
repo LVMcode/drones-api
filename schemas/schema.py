@@ -48,9 +48,9 @@ class DroneUpdate(BaseModel):
 
 
 class MedicationBase(BaseModel):
-    name: str
-    weight: float
-    code: str
+    name: str = Field(regex="^[\\w_-]+$")
+    weight: float = Field(ge=0)
+    code: str = Field(regex="^[A-Z_0-9]+$")
     image: str | None
 
     class Config:
