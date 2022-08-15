@@ -1,13 +1,13 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from models.drone_model import Model, State
 
 
 class DroneBase(BaseModel):
-    serial_number: str
+    serial_number: str = Field(max_length=100)
     model: Model
-    weight_limit: float = 500
-    battery_capacity: int
+    weight_limit: float = Field(default=500, ge=0, le=500)
+    battery_capacity: int = Field(default=100, ge=0, le=100)
     state: State
 
     class Config:
@@ -33,8 +33,8 @@ class DroneRead(DroneCreate):
 
 
 class DroneUpdate(BaseModel):
-    weight_limit: float | None = None
-    battery_capacity: int | None = None
+    weight_limit: float | None = Field(default=None, ge=0, le=500)
+    battery_capacity: int | None = Field(default=None, ge=0, le=100)
     state: State | None = None
 
     class Config:
