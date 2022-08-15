@@ -24,3 +24,6 @@ class DroneService:
 
     def remove(self, id: int) -> None:
         self.drone_repository.remove(id)
+
+    def add_medication(self, drone_id: int, medication_id: int) -> Drone | None:
+        return self.drone_repository.add_medication(drone_id, medication_id)

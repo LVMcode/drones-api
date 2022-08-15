@@ -4,6 +4,7 @@ from sqlmodel import Session, select
 from configs.db import get_session
 from models.drone_model import Drone
 from schemas.schema import DroneCreate, DroneUpdate
+from models.medication_model import Medication
 
 
 class DroneRepository:
@@ -42,3 +43,13 @@ class DroneRepository:
         if drone:
             self.session.delete(drone)
             self.session.commit()
+
+    def add_medication(self, drone_id: int, medication_id: int) -> Drone | None:
+        drone = self.get_by_id(drone_id)
+        medication = self.session.get(Medication, medication_id)
+        if drone and medication:
+            drone.medications.append(medication)
+            self.session.add(drone)
+            self.session.commit()
+            self.session.refresh(drone)
+            return drone
