@@ -8,7 +8,7 @@ from schemas.schema import DroneCreate, DroneUpdate
 
 class DroneRepository:
 
-    def __init__(self, session: Session = Depends()) -> None:
+    def __init__(self, session: Session = Depends(get_session)) -> None:
         self.session = session
 
     def get_all(self, offset: int, limit: int) -> list[Drone]:
