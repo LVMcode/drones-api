@@ -1,7 +1,7 @@
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 
 from repositories.drone_repository import DroneRepository
-from models.drone_model import Drone
+from models.drone_model import Drone, State as DroneState
 from schemas.schema import DroneCreate, DroneUpdate
 
 
@@ -20,6 +20,13 @@ class DroneService:
         return self.drone_repository.add(drone)
 
     def update(self, id: int, new_drone_data: DroneUpdate) -> Drone | None:
+        drone_data = new_drone_data.dict()
+        new_state = drone_data["state"]
+        if new_state == DroneState.LOADING:
+            drone = self.drone_repository.get_by_id(id)
+            if drone and drone.battery_capacity < 25:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                    detail=f"Drone battery level below 25%")
         return self.drone_repository.update(id, new_drone_data)
 
     def remove(self, id: int) -> None:
