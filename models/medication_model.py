@@ -12,5 +12,5 @@ class Medication(SQLModel, table=True):
     code: str
     image: str | None
 
-    drone_id: int = Field(foreign_key="drone.id")
+    drone_id: int | None = Field(default=None, foreign_key="drone.id")
     drone: "Drone" = Relationship(back_populates="medications")
