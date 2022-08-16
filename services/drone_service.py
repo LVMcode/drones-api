@@ -10,10 +10,10 @@ class DroneService:
     def __init__(self, drone_repository: DroneRepository = Depends()) -> None:
         self.drone_repository = drone_repository
 
-    def get_all(self, offset, limit) -> list[Drone]:
-        return self.drone_repository.get_all(offset=offset, limit=limit)
+    def get_all(self, offset: int, limit: int, drone_state: DroneState | None = None) -> list[Drone]:
+        return self.drone_repository.get_all(offset=offset, limit=limit, drone_state=drone_state)
 
-    def get_by_id(self, id) -> Drone | None:
+    def get_by_id(self, id: int) -> Drone | None:
         return self.drone_repository.get_by_id(id)
 
     def add(self, drone: DroneCreate):

@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException, APIRouter, Query, Path, Body, status
 
 from services.drone_service import DroneService
 from schemas.schema import DroneCreate, DroneRead, DroneReadWithMedications, DroneUpdate
-from models.drone_model import Drone
+from models.drone_model import Drone, State as DroneState
 
 
 router = APIRouter(prefix="/api/drones", tags=["drone"])
@@ -11,8 +11,9 @@ router = APIRouter(prefix="/api/drones", tags=["drone"])
 @router.get("/", response_model=list[DroneRead])
 def get_drones(offset: int = 0,
                limit: int = Query(default=100, le=100),
+               drone_state: DroneState | None = None,
                drone_service: DroneService = Depends()) -> list[Drone]:
-    return drone_service.get_all(offset=offset, limit=limit)
+    return drone_service.get_all(offset=offset, limit=limit, drone_state=drone_state)
 
 
 @router.get("/{drone_id}", response_model=DroneReadWithMedications)

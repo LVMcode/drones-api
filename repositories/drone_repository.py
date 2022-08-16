@@ -2,7 +2,7 @@ from fastapi import Depends
 from sqlmodel import Session, select
 
 from configs.db import get_session
-from models.drone_model import Drone
+from models.drone_model import Drone, State as DroneState
 from schemas.schema import DroneCreate, DroneUpdate
 from models.medication_model import Medication
 
@@ -12,8 +12,11 @@ class DroneRepository:
     def __init__(self, session: Session = Depends(get_session)) -> None:
         self.session = session
 
-    def get_all(self, offset: int, limit: int) -> list[Drone]:
-        return self.session.exec(select(Drone).offset(offset).limit(limit)).all()
+    def get_all(self, offset: int, limit: int, drone_state: DroneState | None = None) -> list[Drone]:
+        drones = select(Drone)
+        if drone_state:
+            drones = drones.where(Drone.state == drone_state)
+        return self.session.exec(drones.offset(offset).limit(limit)).all()
 
     def get_by_id(self, id: int) -> Drone | None:
         drone = self.session.get(Drone, id)
