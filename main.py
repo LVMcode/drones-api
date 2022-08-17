@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 import uvicorn
-from sqlmodel import SQLModel
+from sqlmodel import SQLModel, Session, select
+from fastapi_utils.tasks import repeat_every
 
 from models.drone_model import Drone
 from models.medication_model import Medication
-from configs.db import engine
+from configs import db, loggers
 from routers.v1 import drone_router, medication_router
 
 
@@ -15,7 +16,23 @@ app.include_router(medication_router.router)
 
 @app.on_event("startup")
 def on_startup():
-    SQLModel.metadata.create_all(engine)
+    SQLModel.metadata.create_all(db.engine)
+
+
+logger = loggers.get_battery_level_logger()
+
+
+@app.on_event("startup")
+@repeat_every(seconds=60*60)
+def check_db():
+    pretty_drones = []
+    with Session(db.engine) as session:
+        drones = session.exec(
+            select(Drone.serial_number, Drone.battery_capacity))
+        for dron in drones:
+            pretty_drones.append(
+                (f"SERIAL: {dron[0]} BATTERY LEVEL: {dron[1]}%"))
+    logger.info(pretty_drones)
 
 
 if __name__ == "__main__":
