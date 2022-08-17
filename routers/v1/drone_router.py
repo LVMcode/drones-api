@@ -16,6 +16,13 @@ def get_drones(offset: int = 0,
     return drone_service.get_all(offset=offset, limit=limit, drone_state=drone_state)
 
 
+@router.get("/availableForLoading", response_model=list[DroneRead])
+def get_available_drones_for_loading(offset: int = 0,
+                                     limit: int = Query(default=100, le=100),
+                                     drone_service: DroneService = Depends()) -> list[Drone]:
+    return drone_service.get_available_for_loading(offset=offset, limit=limit)
+
+
 @router.get("/{drone_id}", response_model=DroneReadWithMedications)
 def get_drone_by_id(drone_id: int,
                     drone_service: DroneService = Depends()) -> Drone | None:
