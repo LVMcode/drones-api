@@ -34,7 +34,14 @@ class DroneRepository:
         if drone:
             drone_data = new_drone_data.dict(exclude_unset=True)
             for key, value in drone_data.items():
-                setattr(drone, key, value)
+                if key == "medication_ids":
+                    medication_ids: list[int] = drone_data["medication_ids"]
+                    drone.medications = []
+                    for medication_id in medication_ids:
+                        self.add_medication(
+                            drone_id=id, medication_id=medication_id)
+                else:
+                    setattr(drone, key, value)
             self.session.add(drone)
             self.session.commit()
             self.session.refresh(drone)

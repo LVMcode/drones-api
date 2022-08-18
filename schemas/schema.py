@@ -32,17 +32,22 @@ class DroneRead(DroneCreate):
     id: int
 
 
-class DroneUpdate(BaseModel):
+class DroneUpdateBase(BaseModel):
     weight_limit: float | None = Field(default=None, ge=0, le=500)
     battery_capacity: int | None = Field(default=None, ge=0, le=100)
     state: State | None = None
+
+
+class DroneUpdate(DroneUpdateBase):
+    medication_ids: list[int] | None = None
 
     class Config:
         schema_extra = {
             "example": {
                 "weight_limit": 400,
                 "battery_capacity": 70,
-                "state": State.RETURNING
+                "state": State.RETURNING,
+                "medication_ids": [1, 3, 18]
             }
         }
 

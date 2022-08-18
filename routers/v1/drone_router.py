@@ -39,7 +39,7 @@ def add_drone(drone: DroneCreate,
     return drone_service.add(drone)
 
 
-@router.patch("/{drone_id}", response_model=DroneRead)
+@router.patch("/{drone_id}", response_model=DroneReadWithMedications)
 def update_drone(drone_id: int,
                  new_drone_data: DroneUpdate,
                  drone_service: DroneService = Depends()) -> Drone | None:

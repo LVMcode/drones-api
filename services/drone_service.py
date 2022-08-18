@@ -1,14 +1,17 @@
 from fastapi import Depends, HTTPException, status
 
 from repositories.drone_repository import DroneRepository
+from repositories.medication_repository import MedicationRepository
 from models.drone_model import Drone, State as DroneState
 from schemas.schema import DroneCreate, DroneUpdate
 
 
 class DroneService:
 
-    def __init__(self, drone_repository: DroneRepository = Depends()) -> None:
+    def __init__(self, drone_repository: DroneRepository = Depends(),
+                 medication_repository: MedicationRepository = Depends()) -> None:
         self.drone_repository = drone_repository
+        self.medication_repository = medication_repository
 
     def get_all(self, offset: int, limit: int, drone_state: DroneState | None = None) -> list[Drone]:
         return self.drone_repository.get_all(offset=offset, limit=limit, drone_state=drone_state)
@@ -36,6 +39,19 @@ class DroneService:
             if drone and drone.battery_capacity < 25:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                                     detail=f"Drone battery level below 25%")
+        medication_ids: list[int] = drone_data["medication_ids"]
+        if len(medication_ids) > 0:
+            medications_weight: float = 0
+            drone = self.drone_repository.get_by_id(id)
+            if drone:
+                for medication_id in medication_ids:
+                    medication = self.medication_repository.get_by_id(
+                        medication_id)
+                    if medication:
+                        medications_weight += medication.weight
+                        if not DroneService.check_load_capacity(drone, medications_weight):
+                            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                                detail=f"Total weight of medications above drone weight limit")
         return self.drone_repository.update(id, new_drone_data)
 
     def remove(self, id: int) -> None:
@@ -50,4 +66,4 @@ class DroneService:
         for medication in drone.medications:
             used_load_capacity += medication.weight if medication else 0
         new_used_load_capacity = used_load_capacity + new_load
-        return True if new_used_load_capacity < drone.weight_limit else False
+        return True if new_used_load_capacity <= drone.weight_limit else False
