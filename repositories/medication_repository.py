@@ -29,6 +29,8 @@ class MedicationRepository:
         medication = self.session.get(Medication, id)
         if medication:
             medication_data = new_medication_data.dict(exclude_unset=True)
+            medication_data.update(
+                {"image": new_medication_data.dict()["image"]})
             for key, value in medication_data.items():
                 setattr(medication, key, value)
             self.session.add(medication)

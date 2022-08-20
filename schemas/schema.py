@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from fastapi import Form
 
 from models.drone_model import Model, State
 
@@ -56,7 +57,7 @@ class MedicationBase(BaseModel):
     name: str = Field(regex="^[\\w_-]+$")
     weight: float = Field(ge=0)
     code: str = Field(regex="^[A-Z_0-9]+$")
-    image: str | None
+    image: str | None = None
 
     class Config:
         orm_mode = True
@@ -64,13 +65,19 @@ class MedicationBase(BaseModel):
 
 class MedicationCreate(MedicationBase):
 
+    @classmethod
+    def as_form(cls,
+                name: str = Form(regex="^[\\w_-]+$"),
+                weight: float = Form(ge=0),
+                code: str = Form(regex="^[A-Z_0-9]+$")):
+        return cls(name=name, weight=weight, code=code)
+
     class Config:
         schema_extra = {
             "example": {
                 "name": "TestMed",
                 "weight": 0.5,
-                "code": "AZ00_5B",
-                "image": None
+                "code": "AZ00_5B"
             }
         }
 
@@ -78,9 +85,24 @@ class MedicationCreate(MedicationBase):
 class MedicationRead(MedicationCreate):
     id: int
 
+    class Config:
+        schema_extra = {
+            "example": {
+                "name": "TestMed",
+                "weight": 0.5,
+                "code": "AZ00_5B",
+                "image": "http://server.com/image_name.jpg",
+                "id": "1"
+            }
+        }
+
 
 class MedicationUpdate(BaseModel):
     image: str | None = None
+
+    @classmethod
+    def as_form(cls):
+        return cls()
 
 
 class DroneReadWithMedications(DroneRead):

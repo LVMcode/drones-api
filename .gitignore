@@ -159,8 +159,11 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-#local development database file
+# local development database file
 database.db
 
 # vscode folder
 .vscode/
+
+# local static images for medications
+static/medication_images/*
