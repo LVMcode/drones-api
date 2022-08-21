@@ -10,6 +10,7 @@ sqlmodel = "*"
 sqlalchemy = "==1.4.35"
 fastapi-utils = "*"
 python-multipart = "*"
+python-dotenv = "*"
 
 [dev-packages]
 autopep8 = "*"

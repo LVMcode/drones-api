@@ -5,7 +5,7 @@ from fastapi_utils.tasks import repeat_every
 
 from models.drone_model import Drone
 from models.medication_model import Medication
-from configs import db, loggers, dirs
+from configs import db, loggers, dirs, environment
 from routers.v1 import drone_router as v1_drone_router, medication_router as v1_medication_router
 
 
@@ -21,6 +21,7 @@ def on_startup():
 
 
 logger = loggers.get_battery_level_logger()
+env = environment.get_environment_variables()
 
 
 @app.on_event("startup")
@@ -37,4 +38,4 @@ def check_db():
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", reload=True, port=8000)
+    uvicorn.run("main:app", reload=env.DEBUG, port=env.API_PORT)
