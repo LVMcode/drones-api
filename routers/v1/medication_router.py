@@ -5,7 +5,7 @@ from schemas.schema import MedicationCreate, MedicationRead, MedicationReadWithD
 from models.medication_model import Medication
 
 
-router = APIRouter(prefix="/api/medications", tags=["medication"])
+router = APIRouter(prefix="/api/v1/medications", tags=["medication"])
 
 
 @router.get("/", response_model=list[MedicationRead])

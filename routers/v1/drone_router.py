@@ -5,7 +5,7 @@ from schemas.schema import DroneCreate, DroneRead, DroneReadWithMedications, Dro
 from models.drone_model import Drone, State as DroneState
 
 
-router = APIRouter(prefix="/api/drones", tags=["drone"])
+router = APIRouter(prefix="/api/v1/drones", tags=["drone"])
 
 
 @router.get("/", response_model=list[DroneRead])
