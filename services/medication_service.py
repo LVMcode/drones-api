@@ -6,6 +6,7 @@ from repositories.medication_repository import MedicationRepository
 from models.medication_model import Medication
 from schemas.schema import MedicationCreate, MedicationUpdate
 from utils import size_converters
+from configs import dirs
 
 
 class MedicationService:
@@ -24,7 +25,7 @@ class MedicationService:
             if img_file.content_type not in ['image/jpeg', 'image/png']:
                 raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,
                                     detail="Only .jpeg or .png  files allowed")
-            img_dir = "static/medication_images"
+            img_dir = dirs.MEDICATION_IMAGES_PATH
             ext = os.path.splitext(img_file.filename)
             content = await img_file.read()
             img_file_size = len(content)
@@ -39,7 +40,7 @@ class MedicationService:
         return self.medication_repository.add(medication)
 
     async def update(self, id: int, new_medication_data: MedicationUpdate, img_file: UploadFile | None) -> Medication | None:
-        img_dir = "static/medication_images"
+        img_dir = dirs.MEDICATION_IMAGES_PATH
         img_file_size_limit = 3
         medication = self.get_by_id(id)
         if medication:
@@ -66,7 +67,7 @@ class MedicationService:
     def remove(self, id: int) -> None:
         medication = self.get_by_id(id)
         if medication:
-            img_dir = "static/medication_images"
+            img_dir = dirs.MEDICATION_IMAGES_PATH
             old_img_file_path = os.path.join(
                 img_dir, medication.image.split("/")[-1]) if medication.image else None
             MedicationService.remove_file(old_img_file_path)

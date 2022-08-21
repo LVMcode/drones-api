@@ -5,7 +5,7 @@ from fastapi_utils.tasks import repeat_every
 
 from models.drone_model import Drone
 from models.medication_model import Medication
-from configs import db, loggers
+from configs import db, loggers, dirs
 from routers.v1 import drone_router, medication_router
 
 
@@ -17,6 +17,7 @@ app.include_router(medication_router.router)
 @app.on_event("startup")
 def on_startup():
     SQLModel.metadata.create_all(db.engine)
+    dirs.create_paths()
 
 
 logger = loggers.get_battery_level_logger()
