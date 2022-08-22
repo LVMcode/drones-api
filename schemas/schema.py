@@ -22,7 +22,7 @@ class DroneCreate(DroneBase):
             "example": {
                 "serial_number": "DA0144",
                 "model": Model.Middleweight,
-                "weight_limit": 500,
+                "weight_limit": 350,
                 "battery_capacity": 100,
                 "state": State.IDLE
             }
