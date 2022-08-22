@@ -8,7 +8,7 @@ from models.drone_model import Drone, State as DroneState
 router = APIRouter(prefix="/api/v1/drones", tags=["drone"])
 
 
-@router.get("/", response_model=list[DroneRead])
+@router.get("/", response_model=list[DroneReadWithMedications])
 def get_drones(offset: int = 0,
                limit: int = Query(default=100, le=100),
                drone_state: DroneState | None = None,
@@ -16,7 +16,7 @@ def get_drones(offset: int = 0,
     return drone_service.get_all(offset=offset, limit=limit, drone_state=drone_state)
 
 
-@router.get("/availableForLoading", response_model=list[DroneRead])
+@router.get("/availableForLoading", response_model=list[DroneReadWithMedications])
 def get_available_drones_for_loading(offset: int = 0,
                                      limit: int = Query(default=100, le=100),
                                      drone_service: DroneService = Depends()) -> list[Drone]:

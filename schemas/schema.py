@@ -108,6 +108,18 @@ class MedicationUpdate(BaseModel):
 class DroneReadWithMedications(DroneRead):
     medications: list[MedicationRead] = []
 
+    class Config:
+        schema_extra = {
+            "example": {
+                "serial_number": "DA0144",
+                "model": Model.Middleweight,
+                "weight_limit": 500,
+                "battery_capacity": 100,
+                "state": State.IDLE,
+                "medications": []
+            }
+        }
+
 
 class MedicationReadWithDrone(MedicationRead):
     drone: DroneRead | None = None
