@@ -9,7 +9,7 @@ from configs import db, loggers, dirs, environment
 from routers.v1 import drone_router as v1_drone_router, medication_router as v1_medication_router
 
 
-app = FastAPI()
+app = FastAPI(title="Drone dispatch controller")
 app.include_router(v1_drone_router.router)
 app.include_router(v1_medication_router.router)
 
