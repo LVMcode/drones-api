@@ -7,9 +7,9 @@ if TYPE_CHECKING:
 
 class Medication(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    name: str
-    weight: float
-    code: str
+    name: str = Field(regex="^[\\w_-]+$")
+    weight: float = Field(ge=0)
+    code: str = Field(regex="^[A-Z_0-9]+$")
     image: str | None
 
     drone_id: int | None = Field(default=None, foreign_key="drone.id")
