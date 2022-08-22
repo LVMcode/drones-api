@@ -8,7 +8,7 @@ from models.medication_model import Medication
 router = APIRouter(prefix="/api/v1/medications", tags=["medication"])
 
 
-@router.get("/", response_model=list[MedicationRead])
+@router.get("/", response_model=list[MedicationReadWithDrone])
 def get_medications(offset: int = 0,
                     limit: int = Query(default=100, le=100),
                     medication_service: MedicationService = Depends()) -> list[Medication]:
@@ -32,7 +32,7 @@ async def add_medication(medication: MedicationCreate = Depends(MedicationCreate
     return await medication_service.add(medication, img_file)
 
 
-@router.patch("/{medication_id}", response_model=MedicationRead)
+@router.patch("/{medication_id}", response_model=MedicationReadWithDrone)
 async def update_medication(medication_id: int,
                             new_medication_data: MedicationUpdate = Depends(
                                 MedicationUpdate.as_form),
